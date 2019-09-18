@@ -19,7 +19,7 @@ public class HolidayServiceTest {
     @Test
     public void test() {
 
-        List<LocalDate> dates = service.find("us", 2019, 9, 1, 20, false, false);
+        List<LocalDate> dates = service.findWithinMonth("us", 2019, 9, 1, 20, false, false);
 
         System.out.println(dates);
 

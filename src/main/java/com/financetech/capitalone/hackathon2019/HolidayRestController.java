@@ -1,6 +1,6 @@
 package com.financetech.capitalone.hackathon2019;
 
-import com.financetech.capitalone.hackathon2019.exception.NotEnoughDays;
+import com.financetech.capitalone.hackathon2019.exception.NotEnoughDaysException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +33,19 @@ public class HolidayRestController {
         log.info("received GET request, country:{}, year:{}, month:{}, [{},{}]", country, year, month, start, end);
 
         try {
-            return service.find(country, year, month, start, end, includeWeekend, includeHoliday);
-        } catch (NotEnoughDays e) {
+            return service.findWithinMonth(country, year, month, start, end, includeWeekend, includeHoliday);
+        } catch (NotEnoughDaysException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
+    }
+
+
+
+    @GetMapping(path = "/{id}")
+    public List<LocalDate> getById(@PathVariable("id") Long id) {
+        log.info("GET by id {}", id);
+        return service.findById(id);
     }
 
 }

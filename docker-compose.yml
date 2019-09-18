@@ -1,0 +1,29 @@
+version: '3.6'
+services:
+  businessday-calculator:
+    image: "maven:3.6-jdk-8-slim"
+    container_name: businessday-calculator
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/businessday-calculator:cached
+      - ~/.m2:/root/.m2:cached
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+    working_dir: /businessday-calculator
+    command: ["sh", "-c", "sleep 2 && mvn clean spring-boot:run -Dspring-boot.run.jvmArguments='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'"]
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+  postgres:
+    image: "postgres:10.4-alpine"
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - businessday-calculator-postgres:/var/lib/postgresql/data
+
+volumes:
+  businessday-calculator-postgres:

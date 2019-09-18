@@ -38,7 +38,7 @@ public class HolidayApiClient {
                 .build()
                 .toUri();
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
-        List<String> dates = JsonPath.read(response.getBody(), "$..iso");
+        List<String> dates = JsonPath.read(response.getBody(), "$.response.holidays[*].date.iso");
 
         log.info("holiday API response: {}", dates);
         return dates.stream().map(LocalDate::parse).collect(Collectors.toSet());
