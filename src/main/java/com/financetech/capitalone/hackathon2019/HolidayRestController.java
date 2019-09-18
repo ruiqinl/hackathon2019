@@ -20,6 +20,20 @@ public class HolidayRestController {
     @Autowired
     HolidayService service;
 
+
+    @GetMapping(path = "/{id}")
+    public List<LocalDate> getById(@PathVariable("id") Long id) {
+        log.info("GET by id {}", id);
+        try {
+            return service.findById(id);
+        } catch (NotEnoughDaysException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+
+
+    // keep for test
     @GetMapping(path = "/{country}/{year}/{month}/{start}/{end}")
     public List<LocalDate> get(@PathVariable("country") String country,
                                @PathVariable("year") int year,
@@ -27,8 +41,7 @@ public class HolidayRestController {
                                @PathVariable("start") int start,
                                @PathVariable("end") int end,
                                @RequestParam(value = "includeWeekend", defaultValue = "false") boolean includeWeekend,
-                               @RequestParam(value = "includeHoliday", defaultValue = "false") boolean includeHoliday,
-                               ServletRequest request) {
+                               @RequestParam(value = "includeHoliday", defaultValue = "false") boolean includeHoliday) {
 
         log.info("received GET request, country:{}, year:{}, month:{}, [{},{}]", country, year, month, start, end);
 
@@ -40,12 +53,5 @@ public class HolidayRestController {
 
     }
 
-
-
-    @GetMapping(path = "/{id}")
-    public List<LocalDate> getById(@PathVariable("id") Long id) {
-        log.info("GET by id {}", id);
-        return service.findById(id);
-    }
 
 }
